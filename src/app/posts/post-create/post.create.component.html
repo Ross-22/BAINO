@@ -3,8 +3,9 @@
     <mat-form-field>
         <textarea cols="30" rows="10" [value]="NewPost" [(ngModel)]="EnteredValue"></textarea>
     </mat-form-field>
+    <button mat-raised-button (click)="onAddPost()">Save</button>
 </mat-card>
 <hr>
-<button (click)="onAddPost()">Click</button>
+<button mat-raised-button (click)="onAddPost()">Click</button>
 <hr>
 {{ NewPost }}
