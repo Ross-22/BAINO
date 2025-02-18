@@ -5,13 +5,14 @@ interface Post{
   title: any;
   content: any;
 }
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  title = 'new-app2';
+  title = 'it_elec_6b';
   storedPosts: Post[] = [];
   onPostAdded(post: any): void{
     this.storedPosts.push(post);
