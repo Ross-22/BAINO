@@ -1,20 +1,19 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-
+import { FormsModule } from '@angular/forms';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations'; 
 import { AppComponent } from './app.component';
 import { PostCreateComponent } from './posts/post-create/post.create.component';
-import { FormsModule } from '@angular/forms';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-
-import { MatCardModule } from '@angular/material/card';
-import { MatButtonModule } from '@angular/material/button';
-import { MatFormFieldModule } from '@angular/material/form-field';
 import { HeaderComponent } from './header/header.component';
-import {MatToolbarModule} from '@angular/material/toolbar';
 import { PostListComponent } from './posts/post-list/post-list.component';
-import {MatExpansionModule} from '@angular/material/expansion';
-import {MatInputModule} from '@angular/material/input';
+import { HttpClientModule } from '@angular/common/http';
 
+import { MatCardModule } from '@angular/material/card'; 
+import { MatExpansionModule} from '@angular/material/expansion';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatInputModule } from '@angular/material/input';
+import { PostsService } from './posts/posts.service';
 
 @NgModule({
   declarations: [
@@ -26,13 +25,14 @@ import {MatInputModule} from '@angular/material/input';
   imports: [
     BrowserModule,
     FormsModule,
-    BrowserAnimationsModule,
-    MatButtonModule,
+    BrowserAnimationsModule, 
     MatCardModule,
+    MatExpansionModule, 
     MatFormFieldModule,
     MatToolbarModule,
-    MatExpansionModule,
-    MatInputModule
+    MatInputModule,
+    HttpClientModule
+
   ],
   providers: [],
   bootstrap: [AppComponent]
