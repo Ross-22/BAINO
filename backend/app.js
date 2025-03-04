@@ -1,9 +1,21 @@
 const express = require('express');
 const app = express();
 const bosyParser = require('body-parser');
+const Post = require('./models/post');
+const mongoose = require('mongoose');
 
 app.use(bosyParser.json());
 app.use(bosyParser.urlencoded({extended: false}));
+
+mongoose.connect("mongodb+srv://kadmielbaino:kadmiel2203@cluster0.4hxfe.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
+    .then(() => {
+        console.log('Connected to the Database');
+    })
+    .catch(() => {
+        console.log('Connection Failed')
+    })
+
+
 
 app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', "*");
@@ -15,15 +27,19 @@ app.use((req, res, next) => {
     next();
 })
 
-app.post('/api/posts', (req, res, next) => {
-    const post = req.body;
-    console.log(post);
-    res.status(201).json({
-        message: 'Post added successfully'
-    });
-})
+    app.post('/api/posts', (req, res, next) => {
+        const post = new Post({
+            title: req.body.title,
+            content: req.body.content
+        });
 
-app.use('/api/posts', (req, res, next) => {
+        post.save();
+        res.status(201).json({
+            message: 'Post added successfully'
+        });
+    });
+
+app.get('/api/posts', (req, res, next) => {
     const posts = 
         [{
             id: "fadf12421l",
