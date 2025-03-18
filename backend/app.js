@@ -1,62 +1,82 @@
+
 const express = require('express');
 const app = express();
-const bosyParser = require('body-parser');
-const Post = require('./models/post');
-const mongoose = require('mongoose');
+const bodyParser = require('body-parser')
 
-app.use(bosyParser.json());
-app.use(bosyParser.urlencoded({extended: false}));
+const mongoose = require('mongoose');
+const Post = require('./models/post');
+const postroutes = require('./routes/posts');  
 
 mongoose.connect("mongodb+srv://kadmielbaino:kadmiel2203@cluster0.4hxfe.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
-    .then(() => {
-        console.log('Connected to the Database');
-    })
-    .catch(() => {
-        console.log('Connection Failed')
-    })
 
+    .then(() => {console.log('Connected to MongoDB');})
+    .catch(() => {console.log('Connection failed');})
 
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
 
 app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', "*");
     res.setHeader("Access-Control-Allow-Headers",
-        "Origin, X-Requested-With, Content-Type, Accept");
+    "Origin, X-Requested-With, Content-Type, Accept");
 
-    res.setHeader("Access-Control-Allow-Methods","GET, POST, PATCH, DELETE, OPTIONS");
+    res.setHeader('Access-Control-Allow-Methods',
+        "GET, POST, PATCH, PUT, DELETE, OPTIONS")
+    next();}
+    );
 
-    next();
-})
+app.use("/api/posts", postroutes);
+
 
     app.post('/api/posts', (req, res, next) => {
         const post = new Post({
             title: req.body.title,
             content: req.body.content
         });
-
-        post.save();
+       post.save();
         res.status(201).json({
-            message: 'Post added successfully'
+            message: "Post added successfully"
         });
-    });
+    })
 
-app.get('/api/posts', (req, res, next) => {
-    const posts = 
-        [{
-            id: "fadf12421l",
-            title: "First server-side posikyikykiyikyt",
-            content: "first from server-side"
-        },
-        {
-            id: "asgdagsas",
-            title: "Second server-side post",
-            content: "second from server-side"
-        },
-        ];
+    app.put("/api/posts/:id", (req, res, next)=>{  
+        const post = new Post({  
+          _id: req.body.id,  
+          title: req.body.title,  
+          content: req.body.content  
+        });  
+        Post.updateOne({_id:req.params.id}, post).then(result =>{  
+            console.log(result);  
+            res.status(200).json({message: "Update Successful!"})  
+          });
+        });   
 
-    res.status(200).json({
-        message: 'Posts fetched successfully!',
-        posts: posts    
-    });
+app.get('/api/posts',(req, res, next) => {
+   Post.find()
+        .then(documents =>{
+            res.status(200).json({
+                message: 'Posts successfully fetched',
+                posts: documents
+            });
+        })
+});
+
+app.get("/api/posts/:id",(req, res, next)=>{  
+    Post.findById(req.params.id).then(post =>{  
+        if(post){  
+          res.status(200).json(post);  
+        }else{  
+          res.status(484).json({message: 'Post not Found!'});  
+        }  
+      });  
+});  
+
+app.delete('/api/posts/:id',(req, res, next) => {
+    Post.deleteOne({_id: req.params.id }).then(result => {
+        console.log(result);
+        console.log(req.params.id);
+        res.status(200).json({ message: "Post deleted"});
+    })
 });
 
 module.exports = app;
