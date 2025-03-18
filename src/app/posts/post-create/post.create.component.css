@@ -27,3 +27,7 @@ mat-card {
     color: red;
   }
   
+  .spinner {
+    display: block;
+    margin: auto;
+  }

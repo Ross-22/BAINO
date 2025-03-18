@@ -41,38 +41,30 @@ export class PostsService {
         );
     }
 
-    addPost(title: string, content: string): Observable<{ message: string; postId: string }> {
-        const post: Post = { id: null, title, content };
-        return this.http.post<{ message: string; postId: string }>(
-            'http://localhost:3000/api/posts',
-            post
-        ).pipe(
-            map(responseData => {
-                post.id = responseData.postId;  // Assign the new post ID
-                this.posts.push(post);
-                this.postsUpdated.next([...this.posts]);  // Emit updated posts list
-                return responseData;
-            })
-        );
-    }
+    addPost(title: string, content: string) {
+        const post: Post = { id: null, title: title, content: content };
+        return this.http.post<{ message: string }>('http://localhost:3000/api/posts', post)
+          .pipe(map(responseData => {
+            this.posts.push(post);
+            this.postsUpdated.next([...this.posts]);
+          }));
+      }
+      
         
     
 
-    updatePost(id: string, title: string, content: string): Observable<any> {
+      updatePost(id: string, title: string, content: string) {
         const post: Post = { id: id, title: title, content: content };
         return this.http.put("http://localhost:3000/api/posts/" + id, post)
-            .pipe(
-                map(response => {
-                    const updatedPosts = [...this.posts];
-                    const oldPostIndex = updatedPosts.findIndex(p => p.id === post.id);
-                    updatedPosts[oldPostIndex] = post;
-                    this.posts = updatedPosts;
-                    this.postsUpdated.next([...this.posts]);
-                    this.router.navigate(["/"]);
-                    return response;
-                })
-            );
-    }
+          .pipe(map(() => {
+            const updatedPosts = [...this.posts];
+            const oldPostIndex = updatedPosts.findIndex(p => p.id === post.id);
+            updatedPosts[oldPostIndex] = post;
+            this.posts = updatedPosts;
+            this.postsUpdated.next([...this.posts]);
+          }));
+      }
+      
 
     deletePost(postId: string) {
         return this.http.delete('http://localhost:3000/api/posts/' + postId).pipe(
